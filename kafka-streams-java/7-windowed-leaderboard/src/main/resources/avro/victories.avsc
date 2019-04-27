@@ -1,0 +1,27 @@
+{
+  "type": "record",
+  "name": "Victories",
+  "namespace": "com.github.simplesteph",
+  "fields": [
+    {
+      "name": "count",
+      "type": "long"
+    },
+    {
+      "name": "window_start",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "latest",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "type": "record",
+  "name": "ErrorEvents",
+  "namespace": "com.github.simplesteph",
+  "fields": [
+    {
+      "name": "count",
+      "type": "long"
+    },
+    {
+      "name": "window_start",
+      "type": [
+        "null",
+        {
+          "type": "string"
+        }
+      ],
+      "default": null
+    }
+  ]
+}

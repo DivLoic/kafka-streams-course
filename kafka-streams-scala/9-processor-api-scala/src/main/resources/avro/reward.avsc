@@ -1,0 +1,32 @@
+{
+  "type": "record",
+  "name": "Reward",
+  "namespace": "com.github.simplesteph",
+  "fields": [
+    {
+      "name": "idTerm",
+      "type": "string"
+    },
+    {
+      "name": "coupons",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "Coupon",
+          "fields": [
+            {
+              "name": "code",
+              "type": "string"
+            },
+            {
+              "name": "availability",
+              "type": "boolean"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
+

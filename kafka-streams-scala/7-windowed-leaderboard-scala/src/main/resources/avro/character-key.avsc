@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "CharacterKey",
+  "namespace": "com.github.simplesteph",
+  "fields": [
+    {
+      "name": "name",
+      "type": "string"
+    }
+  ]
+}
