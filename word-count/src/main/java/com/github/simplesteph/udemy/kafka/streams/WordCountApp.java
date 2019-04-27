@@ -7,9 +7,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KStreamBuilder;
-import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.StreamsBuilder;
 
 public class WordCountApp {
     public static void main(String[] args) {
@@ -20,13 +19,13 @@ public class WordCountApp {
         config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
-        KStreamBuilder builder = new KStreamBuilder();
+        StreamsBuilder builder = new StreamsBuilder();
         // 1 - stream from Kafka
 
         KStream<String, String> textLines = builder.stream("word-count-input");
         KTable<String, Long> wordCounts = textLines
                 // 2 - map values to lowercase
-                .mapValues(textLine -> textLine.toLowerCase())
+                .mapValues((ValueMapper<String, String>) String::toLowerCase)
                 // can be alternatively written as:
                 // .mapValues(String::toLowerCase)
                 // 3 - flatmap values split by space
@@ -36,12 +35,12 @@ public class WordCountApp {
                 // 5 - group by key before aggregation
                 .groupByKey()
                 // 6 - count occurrences
-                .count("Counts");
+                .count(Materialized.as("Counts"));
 
         // 7 - to in order to write the results back to kafka
-        wordCounts.to(Serdes.String(), Serdes.Long(), "word-count-output");
+        wordCounts.toStream().to("word-count-output", Produced.with(Serdes.String(), Serdes.Long()));
 
-        KafkaStreams streams = new KafkaStreams(builder, config);
+        KafkaStreams streams = new KafkaStreams(builder.build(), config);
         streams.start();
 
 

@@ -1,12 +1,12 @@
 package com.github.simplesteph.udemy.kafka.streams
 
-import java.lang
 import java.util.Properties
 
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.common.serialization.Serdes
-import org.apache.kafka.streams.kstream.{KStream, KStreamBuilder, KTable}
-import org.apache.kafka.streams.{KafkaStreams, KeyValue, StreamsConfig}
+import org.apache.kafka.streams.scala.Serdes
+import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
+import org.apache.kafka.streams.scala.StreamsBuilder
+import org.apache.kafka.streams.scala.kstream.{Consumed, Grouped, KStream, KTable, Materialized, Produced}
 
 object FavouriteColourAppScala {
   def main(args: Array[String]): Unit = {
@@ -21,10 +21,12 @@ object FavouriteColourAppScala {
     // we disable the cache to demonstrate all the "steps" involved in the transformation - not recommended in prod
     config.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, "0")
 
-    val builder: KStreamBuilder = new KStreamBuilder
+    val builder: StreamsBuilder = new StreamsBuilder
 
     // Step 1: We create the topic of users keys to colours
-    val textLines: KStream[String, String] = builder.stream[String, String]("favourite-colour-input")
+    val textLines: KStream[String, String] = builder.stream[String, String]("favourite-colour-input")(
+      Consumed.`with`(Serdes.String, Serdes.String)
+    )
 
     val usersAndColours: KStream[String, String] = textLines
       // 1 - we ensure that a comma is here as we will split on it
@@ -37,21 +39,23 @@ object FavouriteColourAppScala {
       .filter((user: String, colour: String) => List("green", "blue", "red").contains(colour))
 
     val intermediaryTopic = "user-keys-and-colours-scala"
-    usersAndColours.to(intermediaryTopic)
+    usersAndColours.to(intermediaryTopic)(Produced.`with`(Serdes.String, Serdes.String))
 
     // step 2 - we read that topic as a KTable so that updates are read correctly
-    val usersAndColoursTable: KTable[String, String] = builder.table(intermediaryTopic)
+    val usersAndColoursTable: KTable[String, String] = builder.table(intermediaryTopic)(
+      Consumed.`with`(Serdes.String, Serdes.String)
+    )
 
     // step 3 - we count the occurrences of colours
-    val favouriteColours: KTable[String, lang.Long] = usersAndColoursTable
+    val favouriteColours: KTable[String, Long] = usersAndColoursTable
       // 5 - we group by colour within the KTable
-      .groupBy((user: String, colour: String) => new KeyValue[String, String](colour, colour))
-      .count("CountsByColours")
+      .groupBy((user: String, colour: String) => (colour, colour))(Grouped.`with`(Serdes.String, Serdes.String))
+      .count()(Materialized.as("CountsByColours")(Serdes.String, Serdes.Long))
 
     // 6 - we output the results to a Kafka Topic - don't forget the serializers
-    favouriteColours.to(Serdes.String, Serdes.Long, "favourite-colour-output-scala")
+    favouriteColours.toStream.to("favourite-colour-output-scala")(Produced.`with`(Serdes.String, Serdes.Long))
 
-    val streams: KafkaStreams = new KafkaStreams(builder, config)
+    val streams: KafkaStreams = new KafkaStreams(builder.build, config)
     streams.cleanUp()
     streams.start()
 

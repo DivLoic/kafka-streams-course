@@ -8,3 +8,4 @@ script:
 - mvn clean verify
 # test the scala components
 - cd favourite-colour-scala && sbt test
+
