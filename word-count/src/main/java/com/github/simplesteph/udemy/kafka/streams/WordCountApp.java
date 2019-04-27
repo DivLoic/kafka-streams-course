@@ -18,6 +18,8 @@ public class WordCountApp {
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        // for a immediate feed back when using the generator
+        config.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1000);
 
         StreamsBuilder builder = new StreamsBuilder();
         // 1 - stream from Kafka

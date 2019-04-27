@@ -13,8 +13,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>bank-balance-exactly-once</module>
-        <module>favourite-colour-java</module>
+        <module>arcade-contest-exactly-once</module>
+        <module>favourite-player-java</module>
         <module>streams-starter-project</module>
         <module>user-event-enricher</module>
         <module>word-count</module>
