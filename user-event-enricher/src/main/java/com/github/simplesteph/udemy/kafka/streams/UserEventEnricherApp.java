@@ -3,14 +3,19 @@ package com.github.simplesteph.udemy.kafka.streams;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.StreamsBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
 public class UserEventEnricherApp {
+
+    private static Logger logger = LoggerFactory.getLogger(UserEventEnricherApp.class);
+
     public static void main(String[] args) {
 
         Properties config = new Properties();
@@ -33,7 +38,7 @@ public class UserEventEnricherApp {
         KStream<String, String> userPurchasesEnrichedJoin =
                 userPurchases.join(usersGlobalTable,
                         (key, value) -> key, /* map from the (key, value) of this stream to the key of the GlobalKTable */
-                        (userPurchase, userInfo) -> "Purchase=" + userPurchase + ",UserInfo=[" + userInfo + "]"
+                        (userPurchase, userInfo) -> "{\"purchase\":" + userPurchase + ",\"user-info\":" + userInfo + "}"
                 );
 
         userPurchasesEnrichedJoin.to("user-purchases-enriched-inner-join");
@@ -45,9 +50,9 @@ public class UserEventEnricherApp {
                         (userPurchase, userInfo) -> {
                             // as this is a left join, userInfo can be null
                             if (userInfo != null) {
-                                return "Purchase=" + userPurchase + ",UserInfo=[" + userInfo + "]";
+                                return "{\"purchase\":" + userPurchase + ",\"user-info\":" + userInfo + "}";
                             } else {
-                                return "Purchase=" + userPurchase + ",UserInfo=null";
+                                return "{\"purchase\":" + userPurchase + ",\"user-info\":null}";
                             }
                         }
                 );
@@ -60,10 +65,9 @@ public class UserEventEnricherApp {
         streams.start();
 
         // print the topology
-        System.out.println(streams.toString());
+        logger.info(streams.toString());
 
         // shutdown hook to correctly close the streams application
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
-
     }
 }

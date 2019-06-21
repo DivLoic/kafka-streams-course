@@ -2,6 +2,8 @@ package com.github.simplesteph.udemy.scala.datagen
 
 import java.time.Instant
 
+import io.circe.{Encoder, Json}
+
 object Dataset {
 
   sealed abstract class Character(val name: String, val country: String)
@@ -17,6 +19,25 @@ object Dataset {
 
   val streetFighterCast: Vector[Character] = Vector(RYU, KEN, CHUNLI, GEKI, AKUMA, SAKURA, DHALSIM, BLAIR)
 
+  sealed trait Game
+
+  case object StreetFighter extends Game
+  case object Takken extends Game
+  case object KingOfFighters extends Game
+  case object SoulCalibur extends Game
+
+  case class User(login: String, firstName: String, lastName: Option[String] = None, email: Option[String] = None)
+
+  object User {
+
+    def apply(login: String, firstName: String, lastName: String, email: String): User =
+      new User(login, firstName, Some(lastName), Some(email))
+
+    def apply(login: String, firstName: String, lastName: String): User =
+      new User(login, firstName, Some(lastName))
+  }
+
+  case class Purchase(user: String, game: Game, twoPlayer: Boolean)
 
   object ExactlyOnceExercise {
 
