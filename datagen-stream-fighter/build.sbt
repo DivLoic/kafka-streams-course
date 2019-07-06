@@ -12,7 +12,9 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-parser" % "0.11.1",
   "io.circe" %% "circe-generic" % "0.11.1",
 
-  "junit" % "junit" % "4.12" % Test,
+  "org.scalacheck" %% "scalacheck" % "1.14.0",
+
+"junit" % "junit" % "4.12" % Test,
   "org.scalatest" %% "scalatest" % "3.0.8" % Test
 )
 

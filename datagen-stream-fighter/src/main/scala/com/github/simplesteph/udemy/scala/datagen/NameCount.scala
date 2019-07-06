@@ -1,6 +1,6 @@
 package com.github.simplesteph.udemy.scala.datagen
 
-import com.github.simplesteph.udemy.scala.datagen.Dataset.streetFighterCast
+import com.github.simplesteph.udemy.scala.datagen.Dataset.StreetFighterCast
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.{Logger, LoggerFactory}
@@ -28,7 +28,7 @@ sealed trait NameCount {
 
   def generate: ProducerRecord[String, String] = new ProducerRecord(
     targetTopic,
-    shuffle(streetFighterCast).take(2).map(_.name).reduce((a, b) => s"$a vs $b")
+    shuffle(StreetFighterCast).take(2).map(_.name).reduce((a, b) => s"$a vs $b")
   )
 
   def run(): Unit = {
@@ -46,14 +46,14 @@ sealed trait NameCount {
   }
 }
 
-object A1_NameCount extends App with NameCount {
+object NameCountOne extends App with NameCount {
 
   def targetTopic = "streams-plaintext-input"
 
   run()
 }
 
-object A2_NameCount extends App with NameCount {
+object NameCountTwo extends App with NameCount {
 
   def targetTopic = "word-count-input"
 

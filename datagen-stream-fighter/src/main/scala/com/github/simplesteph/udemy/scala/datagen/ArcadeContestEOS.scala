@@ -15,7 +15,7 @@ import scala.language.postfixOps
 import scala.util.Random
 
 
-object C_ArcadeContestEOS extends App {
+object ArcadeContestEOS extends App {
 
   private val logger: Logger = LoggerFactory.getLogger(getClass)
 

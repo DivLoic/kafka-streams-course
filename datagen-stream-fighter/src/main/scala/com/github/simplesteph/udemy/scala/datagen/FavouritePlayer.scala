@@ -1,6 +1,6 @@
 package com.github.simplesteph.udemy.scala.datagen
 
-import com.github.simplesteph.udemy.scala.datagen.Dataset.streetFighterCast
+import com.github.simplesteph.udemy.scala.datagen.Dataset.StreetFighterCast
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.{Logger, LoggerFactory}
@@ -10,7 +10,7 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.Random.shuffle
 
-object B_FavouritePlayer extends App {
+object FavouritePlayer extends App {
 
   private val logger: Logger = LoggerFactory.getLogger(getClass)
 
@@ -28,7 +28,7 @@ object B_FavouritePlayer extends App {
 
   def generate(host: String): ProducerRecord[String, String] = new ProducerRecord[String, String](
     targetTopic,
-    s"$host,${shuffle(streetFighterCast).head.name}"
+    s"$host,${shuffle(StreetFighterCast).head.name}"
   )
 
   sys.addShutdownHook {

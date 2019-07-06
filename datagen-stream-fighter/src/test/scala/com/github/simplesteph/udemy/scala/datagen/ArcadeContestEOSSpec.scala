@@ -15,7 +15,7 @@ class ArcadeContestEOSSpec extends FlatSpec with Matchers with GivenWhenThen {
     val input = Challenger("john", RYU)
 
     When("newRandomImpact is called by the game")
-    val result = C_ArcadeContestEOS.newRandomImpact(input)
+    val result = ArcadeContestEOS.newRandomImpact(input)
 
     val key = result.key()
     val value = decode[Hit](result.value()).right.get
