@@ -19,6 +19,7 @@
         <module>user-event-enricher</module>
         <module>word-count</module>
         <module>streaming-app-testing</module>
+        <module>user-avro-event-enricher</module>
     </modules>
 
 </project>

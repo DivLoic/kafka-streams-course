@@ -2,6 +2,8 @@ package com.github.simplesteph.udemy.scala.datagen
 
 import java.time.Instant
 
+import com.sksamuel.avro4s.AvroNamespace
+
 object Dataset {
 
   sealed abstract class Character(val name: String, val country: String)
@@ -28,9 +30,17 @@ object Dataset {
 
   val GameCollection: Vector[Game] = Vector(StreetFighter, Takken, KingOfFighters, SoulCalibur, SamuraiShodown)
 
+  @AvroNamespace("com.github.simplesteph")
+  case class UserKey(login: String) extends AnyVal
+
+  @AvroNamespace("com.github.simplesteph")
   case class User(login: String, firstName: String, lastName: Option[String] = None, email: Option[String] = None)
 
+  @AvroNamespace("com.github.simplesteph")
+  case class PurchaseKey(id: String, client: User)
 
+  @AvroNamespace("com.github.simplesteph")
+  case class Purchase(user: String, game: Game, twoPlayer: Boolean)
 
   /* helpers */
 
@@ -43,17 +53,15 @@ object Dataset {
       new User(login, firstName, Some(lastName))
   }
 
-  case class Purchase(user: String, game: Game, twoPlayer: Boolean)
-
   object ExactlyOnceExercise {
 
     case class Challenger(login: String, character: String)
+
+    case class Hit(key: String, challenger: Challenger, damage: Int, time: Instant)
 
     object Challenger {
       def apply(login: String, character: Character): Challenger =
         new Challenger(login, character.name)
     }
-    case class Hit(key: String, challenger: Challenger, damage: Int, time: Instant)
-
   }
 }
