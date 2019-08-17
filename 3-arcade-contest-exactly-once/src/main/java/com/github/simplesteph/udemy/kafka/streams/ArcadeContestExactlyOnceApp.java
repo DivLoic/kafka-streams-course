@@ -76,11 +76,17 @@ public class ArcadeContestExactlyOnceApp {
 
     // create the initial json object for the player life points
     private static JsonNode intiLifePoints() {
+        String datetime = Instant.now().toString();
         ObjectNode lifePoint = JsonNodeFactory.instance.objectNode();
         lifePoint.put("hit-count", 0);
         lifePoint.put("life-points", 100);
-        lifePoint.put("time", Instant.ofEpochMilli(0L).toString());
+        lifePoint.put("game-start", datetime);
+        lifePoint.put("last-impact", datetime);
         return lifePoint;
+    }
+
+    private static JsonNode restartPoints(String startDateTime) {
+        return ((ObjectNode) intiLifePoints()).put("game-start", startDateTime);
     }
 
     private static JsonNode updateLifePoints(JsonNode hit, JsonNode lifePoint) {
@@ -88,15 +94,16 @@ public class ArcadeContestExactlyOnceApp {
         ObjectNode newLifePoint = JsonNodeFactory.instance.objectNode();
 
         if (lifePoint.get("life-points").asInt() == 0) {
-            return updateLifePoints(hit, intiLifePoints());
+            return updateLifePoints(hit, restartPoints(hit.get("time").asText()));
         } else {
-            newLifePoint.put("hit-count", lifePoint.get("hit-count").asInt() + 1);
-            newLifePoint.put("life-points", Math.max(lifePoint.get("life-points").asInt() - hit.get("damage").asInt(), 0));
+            newLifePoint.put("game-start", lifePoint.get("game-start").asText());
+            newLifePoint.put("last-impact", hit.get("time").asText());
 
-            long scoreEpoch = Instant.parse(lifePoint.get("time").asText()).toEpochMilli();
-            long hitEpoch = Instant.parse(hit.get("time").asText()).toEpochMilli();
-            Instant newScoreEpoch = Instant.ofEpochMilli(Math.max(scoreEpoch, hitEpoch));
-            newLifePoint.put("time", newScoreEpoch.toString());
+            newLifePoint.put("hit-count", lifePoint.get("hit-count").asInt() + 1);
+            newLifePoint.put(
+                    "life-points",
+                    Math.max(lifePoint.get("life-points").asInt() - hit.get("damage").asInt(), 0)
+            );
             return newLifePoint;
         }
     }

@@ -1,6 +1,7 @@
 package com.github.simplesteph.udemy.scala.datagen
 
 import java.time.Instant
+import java.util.Properties
 
 import com.github.simplesteph.udemy.scala.datagen.Dataset.ExactlyOnceExercise.{Challenger, Hit}
 import com.github.simplesteph.udemy.scala.datagen.Dataset._
@@ -22,15 +23,18 @@ object ArcadeContestEOS extends App {
   private val config: Map[String, AnyRef] = Map(
     ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092",
 
-    ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG -> classOf[StringSerializer].getName,
-    ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG -> classOf[StringSerializer].getName, // producer acks
+    ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG -> classOf[StringSerializer],
+    ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG -> classOf[StringSerializer], // producer acks
     ProducerConfig.ACKS_CONFIG -> "all", // strongest producing guarantee
     ProducerConfig.RETRIES_CONFIG -> "3",
     ProducerConfig.LINGER_MS_CONFIG -> "1", // leverage idempotent producer from Kafka 0.11 !
     ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG -> "true", // ensure we don't push duplicates
   )
 
-  private val producer = new KafkaProducer[String, String](config asJava)
+  val propreties = new Properties()
+  propreties.putAll(config.asJava)
+
+  private val producer = new KafkaProducer[String, String](propreties)
 
   def targetTopic = "arcade-contest"
 
