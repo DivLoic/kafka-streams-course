@@ -1,0 +1,20 @@
+{
+  "type" : "record",
+  "name" : "Purchase",
+  "namespace" : "com.github.simplesteph",
+  "fields" : [ {
+    "name" : "user",
+    "type" : "string"
+  }, {
+    "name" : "game",
+    "type" : {
+      "type" : "enum",
+      "name" : "Game",
+      "namespace" : "com.github.simplesteph",
+      "symbols" : [ "Takken", "SamuraiShodown", "KingOfFighters", "SoulCalibur", "StreetFighter" ]
+    }
+  }, {
+    "name" : "twoPlayer",
+    "type" : "boolean"
+  } ]
+}

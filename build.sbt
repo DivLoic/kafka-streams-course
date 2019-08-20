@@ -1,7 +1,7 @@
-name := "kafka-streams-course"
-organization := "com.github.simplesteph.udemy.kafka.streams"
-version := "2.0-SNAPSHOT"
-scalaVersion := "2.12.8"
+name          := "kafka-streams-course"
+organization  := "com.github.simplesteph.udemy.kafka.streams"
+version       := "2.0-SNAPSHOT"
+scalaVersion  := "2.12.8"
 
 lazy val `kafka-streams-course` = (project in file(".")).aggregate(
   `datagen-stream-fighter`,

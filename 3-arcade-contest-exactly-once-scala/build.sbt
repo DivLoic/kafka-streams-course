@@ -1,6 +1,6 @@
 name := "3-arcade-contest-exactly-once-scala"
 organization        := "com.github.simplesteph.udemy.kafka.streams"
-version             := "1.0-SNAPSHOT"
+version             := "2.0-SNAPSHOT"
 scalaVersion := "2.12.8"
 
 // https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams

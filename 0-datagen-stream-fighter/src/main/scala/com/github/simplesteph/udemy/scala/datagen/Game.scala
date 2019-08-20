@@ -1,5 +1,8 @@
 package com.github.simplesteph.udemy.scala.datagen
 
+import com.sksamuel.avro4s.{AvroName, AvroNamespace}
+
+@AvroNamespace("com.github.simplesteph")
 sealed trait Game
 
 object Game {

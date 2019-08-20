@@ -2,8 +2,9 @@ package com.github.simplesteph.udemy.scala.datagen
 
 import java.time.Instant
 
+import com.github.simplesteph.udemy.scala.datagen.Dataset.{Purchase, PurchaseKey, User, UserKey}
 import com.github.simplesteph.udemy.scala.datagen.Game.{KingOfFighters, SamuraiShodown, SoulCalibur, StreetFighter, Takken}
-import com.sksamuel.avro4s.AvroNamespace
+import com.sksamuel.avro4s.{AvroNamespace, AvroSchema}
 
 object Dataset {
 
@@ -24,16 +25,16 @@ object Dataset {
   val GameCollection: Vector[Game] = Vector(StreetFighter, Takken, KingOfFighters, SoulCalibur, SamuraiShodown)
 
   @AvroNamespace("com.github.simplesteph")
-  case class UserKey(login: String) extends AnyVal
+  case class UserKey(login: String)
 
   @AvroNamespace("com.github.simplesteph")
   case class User(login: String, firstName: String, lastName: Option[String] = None, email: Option[String] = None)
 
   @AvroNamespace("com.github.simplesteph")
-  case class PurchaseKey(id: String, client: User)
+  case class PurchaseKey(id: String, clientId: UserKey)
 
   @AvroNamespace("com.github.simplesteph")
-  case class Purchase(user: String, game: Game, twoPlayer: Boolean)
+  case class Purchase(user: String, game: Game, istwoPlayer: Boolean)
 
   /* helpers */
 

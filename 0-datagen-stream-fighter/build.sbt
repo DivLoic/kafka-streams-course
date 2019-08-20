@@ -1,7 +1,7 @@
-name := "0-datagen-stream-fighter"
+name                := "0-datagen-stream-fighter"
 organization        := "com.github.simplesteph.udemy.kafka.streams"
-version             := "1.0-SNAPSHOT"
-scalaVersion := "2.12.8"
+version             := "2.0-SNAPSHOT"
+scalaVersion        := "2.12.8"
 
 // https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams
 libraryDependencies ++= Seq(
@@ -23,7 +23,7 @@ resolvers ++= Seq("confluent" at "http://packages.confluent.io/maven/")
 libraryDependencies ++= Seq(
   "io.confluent" % "kafka-avro-serializer" % "5.2.2",
   "io.confluent" % "kafka-streams-avro-serde" % "5.2.2",
-  "com.sksamuel.avro4s" %% "avro4s-core" % "2.0.4"
+  "com.sksamuel.avro4s" %% "avro4s-core" % "3.0.0"
 )
 
 // leverage java 8

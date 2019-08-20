@@ -43,28 +43,28 @@ object UserDataProducer extends App {
 
   logger info "Example 1 - new user"
   producer.send(userRecord(User("jdoe", "john", "Doe", "john.doe@gmail.com"))).get
-  producer.send(purchaseRecord(Purchase("jdoe", StreetFighter, twoPlayer = false))).get
+  producer.send(purchaseRecord(Purchase("jdoe", StreetFighter, istwoPlayer = false))).get
 
   Thread.sleep(10000)
 
   // 2 - we receive user purchase, but it doesn't exist in Kafka
   logger info "Example 2 - non existing user"
-  producer.send(purchaseRecord(Purchase("bob", Takken, twoPlayer = false))).get
+  producer.send(purchaseRecord(Purchase("bob", Takken, istwoPlayer = false))).get
 
   Thread.sleep(10000)
 
   // 3 - we update user "john", and send a new transaction
   logger info "Example 3 - update to user"
   producer.send(userRecord(User("jojo", "Johnny", "Doe", "johnny.doe@gmail.com"))).get
-  producer.send(purchaseRecord(Purchase("jojo", KingOfFighters, twoPlayer = false))).get
+  producer.send(purchaseRecord(Purchase("jojo", KingOfFighters, istwoPlayer = false))).get
 
   Thread.sleep(10000)
 
   // 4 - we send a user purchase for stephane, but it exists in Kafka later
   logger info "Example 4 - non existing user then user"
-  producer.send(purchaseRecord(Purchase("simplesteph", StreetFighter, twoPlayer = false))).get
+  producer.send(purchaseRecord(Purchase("simplesteph", StreetFighter, istwoPlayer = false))).get
   producer.send(userRecord(User("simplesteph", "Stephane", "Maarek"))).get
-  producer.send(purchaseRecord(Purchase("simplesteph", StreetFighter, twoPlayer = false))).get
+  producer.send(purchaseRecord(Purchase("simplesteph", StreetFighter, istwoPlayer = false))).get
   producer.send(userDeletionRecord("simplesteph")).get // delete for cleanup
 
   Thread.sleep(10000)
@@ -74,7 +74,7 @@ object UserDataProducer extends App {
   producer.send(userRecord(User("alice", "Alice"))).get
   producer.send(userDeletionRecord("alice")).get // that's the delete record
 
-  producer.send(purchaseRecord(Purchase("alice", SoulCalibur, twoPlayer = true))).get
+  producer.send(purchaseRecord(Purchase("alice", SoulCalibur, istwoPlayer = true))).get
 
   Thread.sleep(10000)
   logger info "End of demo"

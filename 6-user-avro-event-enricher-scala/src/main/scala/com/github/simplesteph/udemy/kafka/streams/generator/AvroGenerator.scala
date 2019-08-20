@@ -1,8 +1,9 @@
-package com.github.simplesteph.udemy.scala.datagen
+package com.github.simplesteph.udemy.kafka.streams.generator
 
 import java.util.Properties
 
-import com.github.simplesteph.udemy.scala.datagen.Dataset.{Purchase, User, UserKey}
+import com.github.simplesteph.udemy.scala.datagen.Dataset
+import com.github.simplesteph.udemy.scala.datagen.Dataset.{Purchase, PurchaseKey, User, UserKey}
 import com.sksamuel.avro4s.RecordFormat
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde
 import org.apache.avro.generic.GenericRecord
@@ -12,8 +13,10 @@ import org.slf4j.{Logger, LoggerFactory}
 
 import scala.collection.JavaConverters._
 
-object UserDataProducerUnlimitedAvro extends App {
-
+/**
+ * Created by loicmdivad.
+ */
+object AvroGenerator extends App {
 
   private val logger: Logger = LoggerFactory.getLogger(getClass)
 
@@ -44,7 +47,7 @@ object UserDataProducerUnlimitedAvro extends App {
   val userKeyFormatter = RecordFormat[UserKey]
 
   val purchaseFormatter = RecordFormat[Purchase]
-  val purchaseKeyFormatter = RecordFormat[Purchase]
+  val purchaseKeyFormatter = RecordFormat[PurchaseKey]
 
   val clients = Vector[User](
     User("jdoe", "john", "Doe", "john.doe@gmail.com"),
@@ -64,22 +67,24 @@ object UserDataProducerUnlimitedAvro extends App {
     val avroKey = userKeyFormatter.to(UserKey(client.login))
     val avroValue = userKeyFormatter.to(UserKey(client.login))
 
-    new ProducerRecord[GenericRecord, GenericRecord]("user-table", avroKey, avroValue)
+    new ProducerRecord[GenericRecord, GenericRecord]("user-table-avro", avroKey, avroValue)
 
   }.foreach(producer.send)
 
-  val purchaseGen: Gen[Purchase] = for {
+  val keyValuePurchaseGen = for {
+    uuid <- Gen.uuid.map(_.toString.take(8))
+
+    game <- Gen.oneOf(Dataset.GameCollection)
 
     knownClient <- Gen.oneOf(clients)
     unknownClient <- Gen.chooseNum(0, 999).map(i => User(s"Unknown$i", ""))
 
     client <-  Gen.frequency((3, knownClient), (4, unknownClient))
-
-    game <- Gen.oneOf(Dataset.GameCollection)
+    emailOrLogin = client.email.getOrElse("<email-not-available>")
 
     twoPlayerMode <- Gen.frequency((1, true), (1, false))
 
-  } yield Purchase(client.login, game, twoPlayerMode)
+  } yield (PurchaseKey(uuid, UserKey(client.login)), Purchase(emailOrLogin, game, twoPlayerMode))
 
   producer.flush()
 
@@ -91,14 +96,14 @@ object UserDataProducerUnlimitedAvro extends App {
 
     if(i % 10 == 0) logger info s"Generating the ${i}th Purchase"
 
-    purchaseGen.sample.foreach { purchase =>
+    keyValuePurchaseGen.sample.foreach { case (keyPurchase, valuePurchase) =>
 
       if(i % 10 == 0) logger info s"Sending the ${i}th Producer Record"
 
-      val avroKey: GenericRecord = ??? //= userKeyFormatter.to(PurchaseKey())
-      val avroValue: GenericRecord = ??? //= purchaseFormatter.to(purchase)
+      val avroKey: GenericRecord = purchaseKeyFormatter.to(keyPurchase)
+      val avroValue: GenericRecord = purchaseFormatter.to(valuePurchase)
 
-      val record = new ProducerRecord[GenericRecord, GenericRecord]("user-purchases", avroKey, avroValue)
+      val record = new ProducerRecord[GenericRecord, GenericRecord]("user-purchases-avro", avroKey, avroValue)
 
       producer.send(record)
     }
