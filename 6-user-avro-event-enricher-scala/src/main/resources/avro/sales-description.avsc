@@ -1,15 +1,21 @@
 {
   "type" : "record",
-  "name" : "User",
+  "name" : "SalesDescription",
   "namespace" : "com.github.simplesteph",
   "fields" : [ {
+    "name" : "game",
+    "type" : "Game"
+  }, {
+    "name" : "is_two_player",
+    "type" : "boolean"
+  }, {
     "name" : "login",
     "type" : "string"
   }, {
-    "name" : "firstName",
+    "name" : "first_name",
     "type" : "string"
   }, {
-    "name" : "lastName",
+    "name" : "last_name",
     "type" : [ "null", "string" ],
     "default" : null
   }, {

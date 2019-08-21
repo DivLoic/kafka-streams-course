@@ -14,7 +14,7 @@
       "symbols" : [ "Takken", "SamuraiShodown", "KingOfFighters", "SoulCalibur", "StreetFighter" ]
     }
   }, {
-    "name" : "twoPlayer",
+    "name" : "is_two_player",
     "type" : "boolean"
   } ]
 }

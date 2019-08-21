@@ -30,6 +30,6 @@ initialize := {
     sys.error("Java 8 is required for this project.")
 }
 
-unmanagedClasspath in Test += baseDirectory.value / "avro"
-
 stringType in AvroConfig := "String"
+
+sourceDirectory in AvroConfig := (resourceDirectory in Compile).value / "avro"
