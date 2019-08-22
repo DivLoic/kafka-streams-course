@@ -1,0 +1,25 @@
+{
+  "type": "record",
+  "name": "PurchaseKey",
+  "namespace": "com.github.simplesteph",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "user_key",
+      "type": {
+        "type": "record",
+        "name": "UserKey",
+        "namespace": "com.github.simplesteph",
+        "fields": [
+          {
+            "name": "login",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

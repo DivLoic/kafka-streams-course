@@ -8,6 +8,10 @@
     <artifactId>6-user-avro-event-enricher</artifactId>
     <version>2.0-SNAPSHOT</version>
 
+    <properties>
+        <avro.maven.plugin.version>1.9.0</avro.maven.plugin.version>
+    </properties>
+
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams -->
         <dependency>
@@ -53,6 +57,29 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <version>${avro.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>schema</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/resources/avro/</sourceDirectory>
+                            <testSourceDirectory>${project.basedir}/src/test/resources/avro/</testSourceDirectory>
+                            <outputDirectory>
+                                ${project.build.directory}/generated-main-avro-java/
+                            </outputDirectory>
+                            <testOutputDirectory>
+                                ${project.build.directory}/generated-test-avro-java/
+                            </testOutputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!--package as one fat jar-->
             <plugin>

@@ -67,7 +67,7 @@ object SpecificAvroEventScalaApp extends App {
     (userPurchase: Purchase, userInfo: User) => {
       new SalesDescription(
         userPurchase.getGame,
-        userPurchase.getTwoPlayer,
+        userPurchase.getIsTwoPlayer,
         userInfo.getLogin,
         userInfo.getFirstName,
         userInfo.getLastName,
