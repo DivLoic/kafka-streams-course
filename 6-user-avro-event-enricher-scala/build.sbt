@@ -17,8 +17,8 @@ libraryDependencies ++= Seq(
 resolvers ++= Seq("confluent" at "http://packages.confluent.io/maven/")
 
 libraryDependencies ++= Seq(
-  "io.confluent" % "kafka-avro-serializer" % "5.2.2",
-  "io.confluent" % "kafka-streams-avro-serde" % "5.2.2"
+  "io.confluent" % "kafka-avro-serializer" % "5.3.0",
+  "io.confluent" % "kafka-streams-avro-serde" % "5.3.0"
 )
 
 // leverage java 8

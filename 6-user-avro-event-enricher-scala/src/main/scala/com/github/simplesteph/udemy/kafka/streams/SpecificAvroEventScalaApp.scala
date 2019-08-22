@@ -76,7 +76,7 @@ object SpecificAvroEventScalaApp extends App {
     }
   )
 
-  userPurchasesEnrichedJoin.to("user-purchases-avro-inner-join-scala")
+  userPurchasesEnrichedJoin.to("specific-avro-purchases-join-scala")
 
   val streams = new KafkaStreams(builder.build(), config)
 

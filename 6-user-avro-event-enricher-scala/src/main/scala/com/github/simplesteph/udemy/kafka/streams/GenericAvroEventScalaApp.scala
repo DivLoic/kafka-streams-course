@@ -2,7 +2,6 @@ package com.github.simplesteph.udemy.kafka.streams
 
 import java.util.Properties
 
-import com.github.simplesteph.SalesDescription
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde
 import org.apache.avro.Schema
@@ -61,7 +60,7 @@ object GenericAvroEventScalaApp extends App {
     (userPurchase: GenericRecord, userInfo: GenericRecord) => createSaleDescription(userPurchase , userInfo)
   )
 
-  userPurchasesEnrichedJoin.to("user-purchases-avro-inner-join-scala")
+  userPurchasesEnrichedJoin.to("generic-avro-purchases-join-scala")
 
   val streams = new KafkaStreams(builder.build(), config)
 
@@ -79,12 +78,12 @@ object GenericAvroEventScalaApp extends App {
   def createSaleDescription(key: GenericRecord, value: GenericRecord): GenericRecord = {
     val record = new GenericData.Record(SalesDescriptionSchema)
 
-    new SalesDescription().getIsTwoPlayer
-    record.put("game", "")
-    record.put("is_two_player", "")
-    record.put("first_name", "")
-    record.put("last_name", "")
-    record.put("email", "")
+    record.put("game", value.get("game"))
+    record.put("is_two_player", value.get("is_two_player"))
+    record.put("first_name", key.get("first_name"))
+    record.put("last_name", key.get("last_name"))
+    record.put("email", key.get("email"))
+    record.put("login", key.get("login"))
 
     record
   }
