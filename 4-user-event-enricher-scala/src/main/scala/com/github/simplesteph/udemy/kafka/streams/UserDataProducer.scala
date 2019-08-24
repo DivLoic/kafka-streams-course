@@ -1,12 +1,12 @@
-package com.github.simplesteph.udemy.scala.datagen
+package com.github.simplesteph.udemy.kafka.streams
 
 import java.util.Properties
 
-import com.github.simplesteph.udemy.scala.datagen.Dataset._
+import com.github.simplesteph.udemy.scala.datagen.{Game, Purchase, User}
 import com.github.simplesteph.udemy.scala.datagen.Game.{KingOfFighters, SoulCalibur, StreetFighter, Takken}
-import io.circe.{Encoder, Json}
 import io.circe.generic.auto._
 import io.circe.syntax._
+import io.circe.{Encoder, Json}
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.{Logger, LoggerFactory}

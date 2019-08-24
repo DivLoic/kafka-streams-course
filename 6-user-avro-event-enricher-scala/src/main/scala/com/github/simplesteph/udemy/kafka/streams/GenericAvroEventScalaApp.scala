@@ -24,24 +24,25 @@ object GenericAvroEventScalaApp extends App {
   val avroKeySerde = new GenericAvroSerde()
   val avroValueSerde = new GenericAvroSerde()
 
-  val SalesDescriptionSchema: Schema = new Parser().parse(getClass.getResource("avro/sales-description.avsc").getPath)
+  val SalesDescriptionSchema: Schema =
+    new Parser().parse(getClass.getResource("src/main/avro/sales-description.avsc").getPath)
 
   avroKeySerde
-    .configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://localhost:8081").asJava, true)
+    .configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://127.0.0.1:8081").asJava, true)
 
   avroValueSerde
-    .configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://localhost:8081").asJava, false)
+    .configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://127.0.0.1:8081").asJava, false)
 
   implicit val consumed: Consumed[GenericRecord, GenericRecord] = Consumed.`with`(avroKeySerde, avroValueSerde)
   implicit val produced: Produced[GenericRecord, GenericRecord] = Produced.`with`(avroKeySerde, avroValueSerde)
 
   val config: Properties = new Properties
   config.put(StreamsConfig.APPLICATION_ID_CONFIG, "generic-avro-scala-app")
-  config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
+  config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092")
   config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
   config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, classOf[StringSerde])
   config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, classOf[StringSerde])
-  config.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081")
+  config.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://127.0.0.1:8081")
 
   val builder = new StreamsBuilder()
 

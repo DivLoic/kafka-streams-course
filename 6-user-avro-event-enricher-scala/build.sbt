@@ -30,6 +30,4 @@ initialize := {
     sys.error("Java 8 is required for this project.")
 }
 
-stringType in AvroConfig := "String"
-
-sourceDirectory in AvroConfig := (resourceDirectory in Compile).value / "avro"
+sourceGenerators in Compile += (avroScalaGenerateSpecific in Compile).taskValue

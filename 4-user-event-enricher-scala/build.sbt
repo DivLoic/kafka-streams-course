@@ -13,6 +13,8 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-generic" % "0.11.1"
 )
 
+libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.14.0" // data generation purpose only
+
 // leverage java 8
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 scalacOptions := Seq("-target:jvm-1.8")

@@ -17,7 +17,7 @@ object FavouritePlayer extends App {
   val config: Map[String, AnyRef] = Map[String, AnyRef](
     ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG -> classOf[StringSerializer],
     ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG -> classOf[StringSerializer],
-    ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092",
+    ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "127.0.0.1:9092",
     ProducerConfig.RETRIES_CONFIG -> "0",
     ProducerConfig.ACKS_CONFIG -> "0"
   )

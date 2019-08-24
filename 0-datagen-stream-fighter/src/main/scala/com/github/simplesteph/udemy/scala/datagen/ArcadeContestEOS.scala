@@ -21,7 +21,7 @@ object ArcadeContestEOS extends App {
   private val logger: Logger = LoggerFactory.getLogger(getClass)
 
   private val config: Map[String, AnyRef] = Map(
-    ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092",
+    ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "127.0.0.1:9092",
 
     ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG -> classOf[StringSerializer],
     ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG -> classOf[StringSerializer], // producer acks

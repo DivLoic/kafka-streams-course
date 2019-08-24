@@ -2,9 +2,7 @@ package com.github.simplesteph.udemy.scala.datagen
 
 import java.time.Instant
 
-import com.github.simplesteph.udemy.scala.datagen.Dataset.{Purchase, PurchaseKey, User, UserKey}
-import com.github.simplesteph.udemy.scala.datagen.Game.{KingOfFighters, SamuraiShodown, SoulCalibur, StreetFighter, Takken}
-import com.sksamuel.avro4s.{AvroNamespace, AvroSchema}
+import com.github.simplesteph.udemy.scala.datagen.Game._
 
 object Dataset {
 
@@ -20,32 +18,9 @@ object Dataset {
   case object BLAIR extends Character("Blair", "UK")
   case object BLANKA extends Character("BLANKA", "Brazil")
 
-  val StreetFighterCast: Vector[Character] = Vector(RYU, KEN, CHUNLI, GEKI, AKUMA, SAKURA, DHALSIM, BLAIR)
+  val StreetFighterCast: Vector[Character] = Vector(RYU, KEN, CHUNLI, GEKI, AKUMA, SAKURA, DHALSIM, BLAIR, BLANKA)
 
   val GameCollection: Vector[Game] = Vector(StreetFighter, Takken, KingOfFighters, SoulCalibur, SamuraiShodown)
-
-  @AvroNamespace("com.github.simplesteph")
-  case class UserKey(login: String)
-
-  @AvroNamespace("com.github.simplesteph")
-  case class User(login: String, firstName: String, lastName: Option[String] = None, email: Option[String] = None)
-
-  @AvroNamespace("com.github.simplesteph")
-  case class PurchaseKey(id: String, clientId: UserKey)
-
-  @AvroNamespace("com.github.simplesteph")
-  case class Purchase(user: String, game: Game, istwoPlayer: Boolean)
-
-  /* helpers */
-
-  object User {
-
-    def apply(login: String, firstName: String, lastName: String, email: String): User =
-      new User(login, firstName, Some(lastName), Some(email))
-
-    def apply(login: String, firstName: String, lastName: String): User =
-      new User(login, firstName, Some(lastName))
-  }
 
   object ExactlyOnceExercise {
 

@@ -27,12 +27,18 @@ object SpecificAvroEventScalaApp extends App {
   // output schema
   val salesDescriptionSerde = new SpecificAvroSerde[SalesDescription]()
 
-  userKeySerde :: purchaseKeySerde :: Nil foreach {
-    _.configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://localhost:8081").asJava, true)
-  }
-  userSerde :: purchaseSerde :: salesDescriptionSerde :: Nil foreach {
-    _.configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://localhost:8081").asJava, false)
-  }
+  // configure the serdes
+  userSerde
+    .configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://127.0.0.1:8081").asJava, false)
+
+  userKeySerde
+    .configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://127.0.0.1:8081").asJava, true)
+
+  purchaseSerde
+    .configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://127.0.0.1:8081").asJava, false)
+
+  purchaseKeySerde
+    .configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://127.0.0.1:8081").asJava, true)
 
   implicit val userConsumed: Consumed[UserKey, User] = Consumed.`with`(userKeySerde, userSerde)
   implicit val purchaseConsumed: Consumed[PurchaseKey, Purchase] = Consumed.`with`(purchaseKeySerde, purchaseSerde)
@@ -42,11 +48,11 @@ object SpecificAvroEventScalaApp extends App {
 
   val config: Properties = new Properties
   config.put(StreamsConfig.APPLICATION_ID_CONFIG, "specific-avro-app-scala")
-  config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
+  config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092")
   config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
   config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, classOf[GenericAvroSerde])
   config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, classOf[GenericAvroSerde])
-  config.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081")
+  config.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://127.0.0.1:8081")
 
   val builder = new StreamsBuilder()
 
@@ -62,16 +68,16 @@ object SpecificAvroEventScalaApp extends App {
   val userPurchasesEnrichedJoin = userPurchases.join(usersGlobalTable)(
 
     // map from the (key, value) of this stream to the key of the GlobalKTable
-    (key: PurchaseKey, _: Purchase) => key.getClientId,
+    (key: PurchaseKey, _: Purchase) => key.user_key,
 
     (userPurchase: Purchase, userInfo: User) => {
       new SalesDescription(
-        userPurchase.getGame,
-        userPurchase.getIsTwoPlayer,
-        userInfo.getLogin,
-        userInfo.getFirstName,
-        userInfo.getLastName,
-        userInfo.getEmail
+        userPurchase.game,
+        userPurchase.is_two_player,
+        userInfo.login,
+        userInfo.first_name,
+        userInfo.last_name,
+        userInfo.email
       )
     }
   )

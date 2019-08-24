@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "UserKey",
-  "namespace" : "com.github.simplesteph",
-  "fields" : [ {
-    "name" : "login",
-    "type" : "string"
-  } ]
-}

@@ -1,7 +1,9 @@
-package com.github.simplesteph.udemy.java.datagen;
+package com.github.simplesteph.udemy.kafka.streams;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.simplesteph.udemy.java.datagen.Purchase;
+import com.github.simplesteph.udemy.java.datagen.User;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;

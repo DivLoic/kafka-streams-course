@@ -24,7 +24,6 @@ lazy val `arcade-contest-exactly-once` =
 
 lazy val `user-event-enricher` =
   (project in file("4-user-event-enricher-scala"))
-    .dependsOn(`datagen-stream-fighter`)
 
 lazy val `streaming-app-testing` =
   (project in file("5-streaming-app-testing-scala"))
