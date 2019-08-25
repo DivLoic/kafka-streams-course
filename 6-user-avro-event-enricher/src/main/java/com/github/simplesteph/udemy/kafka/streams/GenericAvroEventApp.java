@@ -15,24 +15,36 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 public class GenericAvroEventApp {
 
     private static Logger logger = LoggerFactory.getLogger(GenericAvroEventApp.class);
 
-    private static Schema SalesDescriptionSchema = new Schema.Parser()
-            .parse(GenericAvroEventApp.class.getResource("avro/sales-description.avsc").getPath());
+    private static Schema salesDescriptionSchema() {
+        Schema schema = null;
+        try {
+            String path = "/avro/sales-description.avsc";
+            File resource = new File(GenericAvroEventApp.class.getResource(path).getPath());
+            schema = new Schema.Parser().parse(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return schema;
+    }
 
     public static void main(String[] args) {
 
         Properties config = new Properties();
-        config.put(StreamsConfig.APPLICATION_ID_CONFIG, "generic-avro-scala-app");
+        config.put(StreamsConfig.APPLICATION_ID_CONFIG, "generic-avro-app");
         config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, GenericAvroSerde.class);
         config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, GenericAvroSerde.class);
         config.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://127.0.0.1:8081");
+
 
         StreamsBuilder builder = new StreamsBuilder();
 
@@ -61,7 +73,7 @@ public class GenericAvroEventApp {
     }
 
     public static GenericRecord createSaleDescription(GenericRecord key, GenericRecord value) {
-        GenericRecord record = new GenericData.Record(SalesDescriptionSchema);
+        GenericRecord record = new GenericData.Record(salesDescriptionSchema());
 
         record.put("game", value.get("game"));
         record.put("is_two_player", value.get("is_two_player"));

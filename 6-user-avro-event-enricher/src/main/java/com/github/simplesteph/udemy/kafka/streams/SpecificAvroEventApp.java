@@ -23,7 +23,7 @@ public class SpecificAvroEventApp {
     public static void main(String[] args) {
 
         Properties config = new Properties();
-        config.put(StreamsConfig.APPLICATION_ID_CONFIG, "generic-avro-scala-app");
+        config.put(StreamsConfig.APPLICATION_ID_CONFIG, "generic-avro-app");
         config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, GenericAvroSerde.class);

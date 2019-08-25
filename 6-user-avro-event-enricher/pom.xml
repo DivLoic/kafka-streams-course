@@ -95,15 +95,15 @@
                             <goal>schema</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${project.basedir}/src/main/resources/avro/</sourceDirectory>
-                            <testSourceDirectory>${project.basedir}/src/test/resources/avro/</testSourceDirectory>
-                            <outputDirectory>
-                                ${project.build.directory}/generated-main-avro-java/
-                            </outputDirectory>
-                            <testOutputDirectory>
-                                ${project.build.directory}/generated-test-avro-java/
-                            </testOutputDirectory>
-                        </configuration>
+                        <sourceDirectory>${project.basedir}/src/main/resources/avro/</sourceDirectory>
+                        <testSourceDirectory>${project.basedir}/src/test/resources/avro/</testSourceDirectory>
+                        <outputDirectory>
+                            ${project.build.directory}/generated-main-avro-java/
+                        </outputDirectory>
+                        <testOutputDirectory>
+                            ${project.build.directory}/generated-test-avro-java/
+                        </testOutputDirectory>
+                    </configuration>
                     </execution>
                 </executions>
             </plugin>

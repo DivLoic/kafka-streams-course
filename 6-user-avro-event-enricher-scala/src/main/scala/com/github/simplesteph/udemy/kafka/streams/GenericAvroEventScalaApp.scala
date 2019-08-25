@@ -1,5 +1,6 @@
 package com.github.simplesteph.udemy.kafka.streams
 
+import java.io.File
 import java.util.Properties
 
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig
@@ -25,7 +26,7 @@ object GenericAvroEventScalaApp extends App {
   val avroValueSerde = new GenericAvroSerde()
 
   val SalesDescriptionSchema: Schema =
-    new Parser().parse(getClass.getResource("src/main/avro/sales-description.avsc").getPath)
+    new Parser().parse(new File(getClass.getResource("/avro/sales-description.avsc").getPath))
 
   avroKeySerde
     .configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://127.0.0.1:8081").asJava, true)
