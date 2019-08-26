@@ -48,17 +48,17 @@ public class GenericAvroEventApp {
 
         StreamsBuilder builder = new StreamsBuilder();
 
-        GlobalKTable<GenericRecord, GenericRecord> usersGlobalTable = builder.globalTable("user-table-avro");
+        GlobalKTable<GenericRecord, GenericRecord> usersGlobalTable = builder.globalTable("avro-user-table");
 
-        KStream<GenericRecord, GenericRecord> userPurchases = builder.stream("user-purchases-avro");
+        KStream<GenericRecord, GenericRecord> userPurchases = builder.stream("avro-user-purchases");
 
         KStream<GenericRecord, GenericRecord> userPurchasesEnrichedJoin = userPurchases.join(
                 usersGlobalTable,
-                (key, value) -> (GenericRecord) key.get("client_id"),
+                (key, value) -> (GenericRecord) key.get("user_key"),
                 GenericAvroEventApp::createSaleDescription
         );
 
-        userPurchasesEnrichedJoin.to("generic-avro-purchases-join");
+        userPurchasesEnrichedJoin.to("generic-avro-purchases");
 
         KafkaStreams streams = new KafkaStreams(builder.build(), config);
 
@@ -72,15 +72,15 @@ public class GenericAvroEventApp {
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
     }
 
-    public static GenericRecord createSaleDescription(GenericRecord key, GenericRecord value) {
+    public static GenericRecord createSaleDescription(GenericRecord purchase, GenericRecord user) {
         GenericRecord record = new GenericData.Record(salesDescriptionSchema());
 
-        record.put("game", value.get("game"));
-        record.put("is_two_player", value.get("is_two_player"));
-        record.put("first_name", key.get("first_name"));
-        record.put("last_name", key.get("last_name"));
-        record.put("email", key.get("email"));
-        record.put("login", key.get("login"));
+        record.put("game", purchase.get("game"));
+        record.put("is_two_player", purchase.get("is_two_player"));
+        record.put("first_name", user.get("first_name"));
+        record.put("last_name", user.get("last_name"));
+        record.put("email", user.get("email"));
+        record.put("login", user.get("login"));
 
         return record;
     }

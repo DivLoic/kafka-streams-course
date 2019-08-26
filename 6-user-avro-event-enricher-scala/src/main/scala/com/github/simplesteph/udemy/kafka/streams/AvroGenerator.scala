@@ -10,9 +10,6 @@ import org.scalacheck.Gen
 import org.slf4j.{Logger, LoggerFactory}
 import scala.collection.JavaConverters._
 
-/**
- * Created by loicmdivad.
- */
 object AvroGenerator extends App {
 
   private val logger: Logger = LoggerFactory.getLogger(getClass)
@@ -67,7 +64,7 @@ object AvroGenerator extends App {
 
   /* produce all users in a compacted topic (to build a ktable)  */
   clients
-    .map(user => new ProducerRecord[UserKey, User]("user-table-avro", UserKey(user.login), user))
+    .map(user => new ProducerRecord[UserKey, User]("avro-user-table", UserKey(user.login), user))
     .foreach(userProducer.send)
 
   /* produce all users in  */
@@ -101,7 +98,7 @@ object AvroGenerator extends App {
 
       if (i % 10 == 0) logger info s"Sending the ${i}th Producer Record"
 
-      val record = new ProducerRecord[PurchaseKey, Purchase]("user-purchases-avro", keyPurchase, valuePurchase)
+      val record = new ProducerRecord[PurchaseKey, Purchase]("avro-user-purchases", keyPurchase, valuePurchase)
 
       purchaseProducer.send(record)
     }

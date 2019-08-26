@@ -40,8 +40,14 @@ object SpecificAvroEventScalaApp extends App {
   purchaseKeySerde
     .configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://127.0.0.1:8081").asJava, true)
 
-  implicit val userConsumed: Consumed[UserKey, User] = Consumed.`with`(userKeySerde, userSerde)
-  implicit val purchaseConsumed: Consumed[PurchaseKey, Purchase] = Consumed.`with`(purchaseKeySerde, purchaseSerde)
+  salesDescriptionSerde
+    .configure(Map(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://127.0.0.1:8081").asJava, false)
+
+  implicit val userConsumed: Consumed[UserKey, User] =
+    Consumed.`with`(userKeySerde, userSerde)
+
+  implicit val purchaseConsumed: Consumed[PurchaseKey, Purchase] =
+    Consumed.`with`(purchaseKeySerde, purchaseSerde)
 
   implicit val produces: Produced[PurchaseKey, SalesDescription] =
     Produced.`with`(purchaseKeySerde, salesDescriptionSerde)
@@ -58,10 +64,10 @@ object SpecificAvroEventScalaApp extends App {
 
   // we get a global table out of Kafka. This table will be replicated on each Kafka Streams application
   // the key of our globalKTable is the user ID
-  val usersGlobalTable: GlobalKTable[UserKey, User] = builder.globalTable("user-avro-table")
+  val usersGlobalTable: GlobalKTable[UserKey, User] = builder.globalTable("avro-user-table")
 
   // we get a stream of user purchases
-  val userPurchases: KStream[PurchaseKey, Purchase] = builder.stream("user-avro-purchases")
+  val userPurchases: KStream[PurchaseKey, Purchase] = builder.stream("avro-user-purchases")
 
   // we want to enrich that stream
 
@@ -82,7 +88,7 @@ object SpecificAvroEventScalaApp extends App {
     }
   )
 
-  userPurchasesEnrichedJoin.to("specific-avro-purchases-join-scala")
+  userPurchasesEnrichedJoin.to("specific-avro-purchases-scala")
 
   val streams = new KafkaStreams(builder.build(), config)
 

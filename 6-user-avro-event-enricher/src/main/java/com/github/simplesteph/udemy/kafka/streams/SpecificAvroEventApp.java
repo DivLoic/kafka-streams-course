@@ -23,7 +23,7 @@ public class SpecificAvroEventApp {
     public static void main(String[] args) {
 
         Properties config = new Properties();
-        config.put(StreamsConfig.APPLICATION_ID_CONFIG, "generic-avro-app");
+        config.put(StreamsConfig.APPLICATION_ID_CONFIG, "specific-avro-app");
         config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, GenericAvroSerde.class);
@@ -51,9 +51,9 @@ public class SpecificAvroEventApp {
         Consumed<UserKey, User> userConsumed = Consumed.with(userKeySerde, userSerde);
         Consumed<PurchaseKey, Purchase> purchaseConsumed = Consumed.with(purchaseKeySerde, purchaseSerde);
 
-        GlobalKTable<UserKey, User> usersGlobalTable = builder.globalTable("user-avro-table", userConsumed);
+        GlobalKTable<UserKey, User> usersGlobalTable = builder.globalTable("avro-user-table", userConsumed);
 
-        KStream<PurchaseKey, Purchase> userPurchases = builder.stream("user-avro-purchases", purchaseConsumed);
+        KStream<PurchaseKey, Purchase> userPurchases = builder.stream("avro-user-purchases", purchaseConsumed);
 
         KStream<PurchaseKey, SalesDescription> userPurchasesEnrichedJoin = userPurchases.join(
                 usersGlobalTable,
@@ -68,7 +68,7 @@ public class SpecificAvroEventApp {
                 )
         );
 
-        userPurchasesEnrichedJoin.to("specific-avro-purchases-join");
+        userPurchasesEnrichedJoin.to("specific-avro-purchases");
 
         KafkaStreams streams = new KafkaStreams(builder.build(), config);
 

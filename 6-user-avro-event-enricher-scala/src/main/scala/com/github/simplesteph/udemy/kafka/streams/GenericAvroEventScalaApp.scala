@@ -49,20 +49,20 @@ object GenericAvroEventScalaApp extends App {
 
   // we get a global table out of Kafka. This table will be replicated on each Kafka Streams application
   // the key of our globalKTable is the user ID
-  val usersGlobalTable: GlobalKTable[GenericRecord, GenericRecord] = builder.globalTable("user-table-avro")
+  val usersGlobalTable: GlobalKTable[GenericRecord, GenericRecord] = builder.globalTable("avro-user-table")
 
   // we get a stream of user purchases
-  val userPurchases: KStream[GenericRecord, GenericRecord] = builder.stream("user-purchases-avro")
+  val userPurchases: KStream[GenericRecord, GenericRecord] = builder.stream("avro-user-purchases")
 
   // we want to enrich that stream
   val userPurchasesEnrichedJoin: KStream[GenericRecord, GenericRecord] = userPurchases.join(usersGlobalTable)(
     /* map from the (key, value) of this stream to the key of the GlobalKTable */
-    (key: GenericRecord, _: GenericRecord) => key.get("client_id").asInstanceOf[GenericRecord],
+    (key: GenericRecord, _: GenericRecord) => key.get("user_key").asInstanceOf[GenericRecord],
 
     (userPurchase: GenericRecord, userInfo: GenericRecord) => createSaleDescription(userPurchase , userInfo)
   )
 
-  userPurchasesEnrichedJoin.to("generic-avro-purchases-join-scala")
+  userPurchasesEnrichedJoin.to("generic-avro-purchases-scala")
 
   val streams = new KafkaStreams(builder.build(), config)
 
@@ -77,15 +77,15 @@ object GenericAvroEventScalaApp extends App {
     streams.close()
   }
 
-  def createSaleDescription(key: GenericRecord, value: GenericRecord): GenericRecord = {
+  def createSaleDescription(purchase: GenericRecord, user: GenericRecord): GenericRecord = {
     val record = new GenericData.Record(SalesDescriptionSchema)
 
-    record.put("game", value.get("game"))
-    record.put("is_two_player", value.get("is_two_player"))
-    record.put("first_name", key.get("first_name"))
-    record.put("last_name", key.get("last_name"))
-    record.put("email", key.get("email"))
-    record.put("login", key.get("login"))
+    record.put("game", purchase.get("game"))
+    record.put("is_two_player", purchase.get("is_two_player"))
+    record.put("first_name", user.get("first_name"))
+    record.put("last_name", user.get("last_name"))
+    record.put("email", user.get("email"))
+    record.put("login", user.get("login"))
 
     record
   }
