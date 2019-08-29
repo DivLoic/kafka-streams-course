@@ -89,12 +89,12 @@
             </exclusions>
         </dependency>
 
+        <!-- // data generation dependencies only -->
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
             <version>1.0.1</version>
         </dependency>
-
         <dependency>
             <groupId>org.jeasy</groupId>
             <artifactId>easy-random-core</artifactId>

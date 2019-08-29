@@ -3,14 +3,15 @@ package com.github.simplesteph.udemy.kafka.streams
 import java.util.Properties
 
 import com.github.simplesteph._
+import com.github.simplesteph.udemy.kafka.streams.internal.Generator
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
-import org.scalacheck.Gen
 import org.slf4j.{Logger, LoggerFactory}
+
 import scala.collection.JavaConverters._
 
-object AvroGenerator extends App {
+object AvroGenerator extends App with Generator {
 
   private val logger: Logger = LoggerFactory.getLogger(getClass)
 
@@ -49,39 +50,23 @@ object AvroGenerator extends App {
     purchaseSerde.serializer()
   )
 
-  val clients = Vector[User](
+  val users = Vector[User](
     User("jdoe", "john", Some("Doe"), Some("john.doe@gmail.com")),
     User("jojo", "Johnny", Some("Doe"), Some("johnny.doe@gmail.com")),
     User("simplesteph", "Stephane", Some("Maarek")),
     User("alice", "Alice"),
-    User("will01St", "Will", Some("Byers"), Some("will@st.com")),
-    User("kali02St", "Kali", Some("Eight"), Some("kali@st.com")),
-    User("lucas03St", "Lucas", Some("Sinclair"), Some("lucas@st.com")),
-    User("jon04St", "Jonathan", Some("Byers"), Some("jonathan@st.com")),
-    User("dustin05St", "Dustin", Some("Henderson"), Some("dustin@st.com")),
-    User("mike0St", "Mike", Some("Wheeler"), Some("mike@st.com"))
+    User("will01", "Will", Some("Byers"), Some("will@st.com")),
+    User("kali02", "Kali", Some("Eight"), Some("kali@st.com")),
+    User("lucas03", "Lucas", Some("Sinclair"), Some("lucas@st.com")),
+    User("jon04", "Jonathan", Some("Byers"), Some("jonathan@st.com")),
+    User("dustin05", "Dustin", Some("Henderson"), Some("dustin@st.com")),
+    User("mike06", "Mike", Some("Wheeler"), Some("mike@st.com"))
   )
 
   /* produce all users in a compacted topic (to build a ktable)  */
-  clients
+  users
     .map(user => new ProducerRecord[UserKey, User]("avro-user-table", UserKey(user.login), user))
     .foreach(userProducer.send)
-
-  /* produce all users in  */
-  val keyValuePurchaseGen = for {
-    uuid <- Gen.uuid.map(_.toString.take(8))
-
-    game <- Gen.oneOf(Game.values.toSeq)
-
-    knownClient <- Gen.oneOf(clients)
-    unknownClient <- Gen.chooseNum(0, 999).map(i => User(s"Unknown$i", ""))
-
-    client <- Gen.frequency((3, knownClient), (4, unknownClient))
-    emailOrLogin = client.email.getOrElse("<email-not-available>")
-
-    twoPlayerMode <- Gen.frequency((1, true), (1, false))
-
-  } yield (PurchaseKey(uuid, UserKey(client.login)), Purchase(emailOrLogin, game, twoPlayerMode))
 
   userProducer.flush()
 
@@ -94,14 +79,24 @@ object AvroGenerator extends App {
 
     if (i % 10 == 0) logger info s"Generating the ${i}th Purchase"
 
-    keyValuePurchaseGen.sample.foreach { case (keyPurchase, valuePurchase) =>
+    for {
+      game <- nextGame
+      user <- nexUser(users)
+      id <- nextPurchaseId.orElse(Some("X"))
+      isTwoPlayer <- nextIsTwoPlayer.orElse(Some(true))
+    } yield {
+
+      val key: PurchaseKey = new PurchaseKey(id, new UserKey(user.login))
+
+      val value: Purchase = new Purchase(user.login, game, isTwoPlayer)
 
       if (i % 10 == 0) logger info s"Sending the ${i}th Producer Record"
 
-      val record = new ProducerRecord[PurchaseKey, Purchase]("avro-user-purchases", keyPurchase, valuePurchase)
+      val record = new ProducerRecord[PurchaseKey, Purchase]("avro-user-purchases", key, value)
 
       purchaseProducer.send(record)
     }
+
     i += 1
   }
 

@@ -2,11 +2,13 @@ package com.github.simplesteph.udemy.kafka.streams.internal;
 
 import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
+import com.github.simplesteph.Game;
 import com.github.simplesteph.User;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.UUID;
 
@@ -19,7 +21,7 @@ public class Generator {
     private static Random random = new Random();
 
     private static EasyRandomParameters parameters = new EasyRandomParameters()
-            .seed(6L)
+            .seed(60L)
             .objectPoolSize(30)
             .ignoreRandomizationErrors(true)
             .randomize(User.class, () -> {
@@ -44,7 +46,11 @@ public class Generator {
     }
 
     protected static String nextPurchaseId() {
-         return UUID.randomUUID().toString().substring(0, 13);
+         return UUID.randomUUID().toString().substring(0, 7);
+    }
+
+    protected static Game nextGame() {
+        return randomElementOf(Arrays.asList(Game.values()));
     }
 
 }

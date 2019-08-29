@@ -93,9 +93,10 @@ public class AvroGenerator extends Generator {
 
                     Optional.ofNullable(Generator.nextUser(users)).map(
                             (user) -> {
+
                                 PurchaseKey key = new PurchaseKey(nextPurchaseId(), new UserKey(user.getLogin()));
 
-                                Purchase value = new Purchase(user.getLogin(), Game.StreetFighter, nextIsTwoPlayer());
+                                Purchase value = new Purchase(user.getLogin(), nextGame(), nextIsTwoPlayer());
 
                                 return new ProducerRecord<>("avro-user-purchases", key, value);
                             }

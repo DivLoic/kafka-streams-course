@@ -31,5 +31,4 @@ lazy val `streaming-app-testing` =
 
 lazy val `user-avro-event-enricher` =
   (project in file("6-user-avro-event-enricher-scala"))
-    .dependsOn(`datagen-stream-fighter`)
 

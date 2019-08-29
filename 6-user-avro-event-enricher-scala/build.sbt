@@ -21,6 +21,12 @@ libraryDependencies ++= Seq(
   "io.confluent" % "kafka-streams-avro-serde" % "5.3.0"
 )
 
+// data generation dependencies only
+libraryDependencies ++= Seq(
+  "org.scalacheck" %% "scalacheck" % "1.14.0",
+  "com.github.stevenchen3" %% "scala-faker" % "0.1.1"
+)
+
 // leverage java 8
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 scalacOptions := Seq("-target:jvm-1.8")
