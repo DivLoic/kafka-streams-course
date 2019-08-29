@@ -22,13 +22,11 @@ lazy val `arcade-contest-exactly-once` =
   (project in file("3-arcade-contest-exactly-once-scala"))
     .dependsOn(`datagen-stream-fighter`)
 
-lazy val `user-event-enricher` =
-  (project in file("4-user-event-enricher-scala"))
+lazy val `user-event-enricher` = project in file("4-user-event-enricher-scala")
 
 lazy val `streaming-app-testing` =
   (project in file("5-streaming-app-testing-scala"))
     .dependsOn(`datagen-stream-fighter`)
 
-lazy val `user-avro-event-enricher` =
-  (project in file("6-user-avro-event-enricher-scala"))
+lazy val `user-avro-event-enricher` = project in file("6-avro-messages-scala")
 

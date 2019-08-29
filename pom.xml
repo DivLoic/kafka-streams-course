@@ -19,7 +19,7 @@
         <module>3-arcade-contest-exactly-once</module>
         <module>4-user-event-enricher</module>
         <module>5-streaming-app-testing</module>
-        <module>6-user-avro-event-enricher</module>
+        <module>6-avro-messages</module>
     </modules>
 
 </project>

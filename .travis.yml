@@ -1,11 +1,14 @@
 # this file is only used for GitHub
 # it is not related to your Kafka Streams learning
 
-language: java
+language: scala
+jdk: openjdk8
+scala:
+  - 2.12.8
 
 script:
 # test the java components
 - mvn clean verify
 # test the scala components
-- cd favourite-colour-scala && sbt test
+- sbt clean test
 
