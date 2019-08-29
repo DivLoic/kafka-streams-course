@@ -1,9 +1,7 @@
 package com.github.simplesteph.udemy.kafka.streams;
 
-import com.github.simplesteph.Purchase;
-import com.github.simplesteph.PurchaseKey;
-import com.github.simplesteph.User;
-import com.github.simplesteph.UserKey;
+import com.github.simplesteph.*;
+import com.github.simplesteph.udemy.kafka.streams.internal.Generator;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -12,13 +10,11 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.Properties;
-import java.util.stream.Stream;
+import java.util.*;
 
 import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
 
-public class AvroGenerator {
+public class AvroGenerator extends Generator {
 
     private static Logger logger = LoggerFactory.getLogger(AvroGenerator.class);
 
@@ -61,21 +57,22 @@ public class AvroGenerator {
                 purchaseSerde.serializer()
         );
 
-        Stream<User> users = Stream.of(
+        /* add a user to this list to see him in the list of purchases */
+        ArrayList<User> users = new ArrayList<>( Arrays.asList(
                     new User("jdoe", "john", "Doe", "john.doe@gmail.com"),
                     new User("jojo", "Johnny", "Doe", "johnny.doe@gmail.com"),
                     new User("simplesteph", "Stephane", "Maarek", null),
                     new User("alice", "Alice", null, null),
-                    new User("will01St", "Will", "Byers", "will@st.com"),
-                    new User("kali02St", "Kali", "Eight", "kali@st.com"),
-                    new User("lucas03St", "Lucas", "Sinclair", "lucas@st.com"),
-                    new User("jon04St", "Jonathan", "Byers", "jonathan@st.com"),
-                    new User("dustin05St", "Dustin", "Henderson", "dustin@st.com"),
-                    new User("mike0St", "Mike", "Wheeler", "mike@st.com")
-        );
+                    new User("will00", "Will", "Byers", "will@st.com"),
+                    new User("kali01", "Kali", "Eight", "kali@st.com"),
+                    new User("lucas03", "Lucas", "Sinclair", "lucas@st.com"),
+                    new User("jon04", "Jonathan", "Byers", "jonathan@st.com"),
+                    new User("dustin05", "Dustin", "Henderson", "dustin@st.com"),
+                    new User("mike06", "Mike", "Wheeler", "mike@st.com")
+        ));
 
-        users
-                .map((user) -> new ProducerRecord<UserKey, User>("user-table-avro", new UserKey(user.getLogin()), user))
+        users.stream()
+                .map((user) -> new ProducerRecord<>("avro-user-table", new UserKey(user.getLogin()), user))
                 .forEach(userProducer::send);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -92,6 +89,21 @@ public class AvroGenerator {
             if (i % 10 == 0) logger.info(String.format("Generating the %sth Purchase", i));
 
             // produce puchase
+            Optional<ProducerRecord<PurchaseKey, Purchase>> maybeRecord =
+
+                    Optional.ofNullable(Generator.nextUser(users)).map(
+                            (user) -> {
+                                PurchaseKey key = new PurchaseKey(nextPurchaseId(), new UserKey(user.getLogin()));
+
+                                Purchase value = new Purchase(user.getLogin(), Game.StreetFighter, nextIsTwoPlayer());
+
+                                return new ProducerRecord<>("avro-user-purchases", key, value);
+                            }
+                    );
+
+            if (i % 10 == 0) logger.info(String.format("Sending the %sth Producer Record", i));
+
+            maybeRecord.ifPresent(purchaseProducer::send);
 
             i += 1;
         }
