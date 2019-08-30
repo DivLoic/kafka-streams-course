@@ -1,4 +1,4 @@
-name := "6-user-avro-event-enricher-scala"
+name := "6-avro-messages-scala"
 organization        := "com.github.simplesteph.udemy.kafka.streams"
 version             := "2.0-SNAPSHOT"
 scalaVersion := "2.12.8"
@@ -35,5 +35,7 @@ initialize := {
   if (sys.props("java.specification.version") != "1.8")
     sys.error("Java 8 is required for this project.")
 }
+
+avroSpecificSourceDirectories in Compile += (resourceDirectory in Compile).value / "avro"
 
 sourceGenerators in Compile += (avroScalaGenerateSpecific in Compile).taskValue

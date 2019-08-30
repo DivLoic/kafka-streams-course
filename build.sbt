@@ -9,7 +9,7 @@ lazy val `kafka-streams-course` = (project in file(".")).aggregate(
   `arcade-contest-exactly-once`,
   `user-event-enricher`,
   `streaming-app-testing`,
-  `user-avro-event-enricher`
+  `avro-messages-scala`
 )
 
 lazy val `datagen-stream-fighter` = project in file("0-datagen-stream-fighter")
@@ -28,5 +28,5 @@ lazy val `streaming-app-testing` =
   (project in file("5-streaming-app-testing-scala"))
     .dependsOn(`datagen-stream-fighter`)
 
-lazy val `user-avro-event-enricher` = project in file("6-avro-messages-scala")
+lazy val `avro-messages-scala` = project in file("6-avro-messages-scala")
 
