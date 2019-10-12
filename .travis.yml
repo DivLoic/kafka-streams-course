@@ -8,7 +8,7 @@ scala:
 
 script:
 # test the java components
-- mvn clean verify
+- cd kafka-streams-java && mvn clean verify
 # test the scala components
-- sbt clean test
+- cd ../kafka-streams-scala && sbt clean test
 

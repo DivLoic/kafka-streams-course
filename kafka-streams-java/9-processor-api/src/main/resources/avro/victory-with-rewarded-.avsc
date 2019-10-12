@@ -1,0 +1,47 @@
+{
+  "type": "record",
+  "name": "RewardedVictory",
+  "namespace": "com.github.simplesteph",
+  "fields": [
+    {
+      "name": "game",
+      "type": {
+        "type": "enum",
+        "name": "Game",
+        "symbols": [
+          "StreetFighter",
+          "KingOfFighters",
+          "Takken",
+          "SamuraiShodown",
+          "SoulCalibur"
+        ]
+      }
+    },
+    {
+      "name": "terminal",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "player",
+      "type": {
+        "type": "enum",
+        "name": "Player",
+        "symbols": [
+          "PlayerOne",
+          "PlayerTwo"
+        ]
+      }
+    },
+    {
+      "name": "coupon",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "MachineId",
+  "namespace": "com.github.simplesteph",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    }
+  ]
+}

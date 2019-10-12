@@ -1,0 +1,61 @@
+{
+  "type": "record",
+  "name": "Victory",
+  "namespace": "com.github.simplesteph",
+  "fields": [
+    {
+      "name": "game",
+      "type": {
+        "type": "enum",
+        "name": "Game",
+        "symbols": [
+          "StreetFighter",
+          "KingOfFighters",
+          "Takken",
+          "SamuraiShodown",
+          "SoulCalibur",
+          "None"
+        ]
+      }
+    },
+    {
+      "name": "terminal",
+      "type": "string"
+    },
+    {
+      "name": "character",
+      "type": {
+        "type": "record",
+        "name": "Character",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "player",
+      "type": {
+        "type": "enum",
+        "name": "Player",
+        "symbols": [
+          "PlayerOne",
+          "PlayerTwo"
+        ]
+      }
+    }
+  ]
+}

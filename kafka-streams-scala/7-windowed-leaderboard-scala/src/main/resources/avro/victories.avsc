@@ -1,0 +1,18 @@
+{
+  "type": "record",
+  "name": "Victories",
+  "namespace": "com.github.simplesteph",
+  "fields": [
+    {
+      "name": "count",
+      "type": "long"
+    },
+    {
+      "name": "latest",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    }
+  ]
+}
